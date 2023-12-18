@@ -1,7 +1,8 @@
 import cors from 'cors'
-import express, { ErrorRequestHandler } from 'express'
+import express, { ErrorRequestHandler, Response } from 'express'
 import { print } from 'listening-on'
 import { HttpError } from './http.error'
+import httpStatus from 'http-status'
 
 let app = express()
 
@@ -37,21 +38,35 @@ app.get('/search', (req, res, next) => {
     },
   }
   tasks.push(task)
-})
-
-app.get('/task', (req, res, next) => {
-  let task = tasks[0]
-  if (!task) {
-    // TODO change to do long polling to reduce network overhead
-    res.json({ task: null })
-    return
-  }
-  res.json({
+  getTaskPollingQueue.shift()?.json({
     task: {
       id: task.id,
       keyword: task.keyword,
     },
   })
+})
+
+let getTaskPollingQueue: Response[] = []
+let longPollingInterval = 1000 * 5
+
+app.get('/task', (req, res, next) => {
+  let task = tasks[0]
+  if (task) {
+    res.json({
+      task: {
+        id: task.id,
+        keyword: task.keyword,
+      },
+    })
+    return
+  }
+  getTaskPollingQueue.push(res)
+  setTimeout(() => {
+    let index = getTaskPollingQueue.indexOf(res)
+    if (index == -1) return
+    getTaskPollingQueue.splice(index, 1)
+    res.redirect(httpStatus.TEMPORARY_REDIRECT, req.url)
+  }, longPollingInterval)
 })
 
 app.post('/task/:id/result', (req, res, next) => {
