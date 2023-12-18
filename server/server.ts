@@ -42,6 +42,7 @@ app.get('/search', (req, res, next) => {
 app.get('/task', (req, res, next) => {
   let task = tasks[0]
   if (!task) {
+    // TODO change to do long polling to reduce network overhead
     res.json({ task: null })
     return
   }
