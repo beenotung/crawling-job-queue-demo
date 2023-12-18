@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form onsubmit="searchByKeyword(event)">
+      <input type="text" name="keyword" />
+      <input type="submit" value="Search" />
+    </form>
+    <div id="resultDiv"></div>
+    <script>
+      let api_origin = 'http://localhost:8100'
+      async function searchByKeyword(event) {
+        event.preventDefault()
+        let form = event.target
+        let res = await fetch(
+          api_origin + '/search?' + new URLSearchParams(new FormData(form)),
+          {
+            headers: {
+              Accept: 'application/json',
+            },
+          },
+        )
+        let json = await res.json()
+        console.log('search result:', json)
+        resultDiv.textContent = JSON.stringify(json)
+      }
+    </script>
+  </body>
+</html>

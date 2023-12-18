@@ -1,0 +1,5 @@
+mobile client <-> web server
+
+crawler <-> web server
+
+crawler <-> 3rd party website (via playwright)
