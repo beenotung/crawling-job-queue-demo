@@ -2,7 +2,7 @@
 
 Youtube Video: https://www.youtube.com/watch?v=DjpczJDAOrk&list=PLjB7odcPYBI2kOtQiMmIk6uei4jl7wQsh&index=1
 
-Source Code: https://github.com/beenotung/job-queue-demo
+Source Code: https://github.com/beenotung/crawling-job-queue-demo
 
 ## Message Flow
 
